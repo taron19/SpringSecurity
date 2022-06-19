@@ -20,22 +20,24 @@ public class SecureConfg extends WebSecurityConfigurerAdapter {
                 .inMemoryAuthentication()
                 .withUser("user")
                 .password("userPassword")
-                .roles("userRole")
+                ./*roles*/authorities("userRole") //если пишем roles то в настройках пишем hasRole/hasAnyRoles
                 .and()
                 .withUser("admin")
-                .roles("adminRole")
+                ./*roles*/authorities("adminRole") //если пишем authorities то в настройках пишем hasAuthority
                 .password("adminpassword");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-               /* .csrf()
-                .disable()*/
+                .csrf()
+                .disable()
                 .authorizeRequests()
                 .antMatchers("/dash/all").permitAll()
-                .antMatchers("/dash/user").hasAnyRole("userRole","adminRole")
-                .antMatchers("/dash/admin").hasRole("adminRole")
+                .antMatchers("/dash/user").hasAnyAuthority("userRole","adminRole")
+                /*hasAnyRole если в настройках писали roles*/
+                .antMatchers("/dash/admin").hasAuthority("adminRole")
+                /*hasRole если в настройках писали roles*/
                 .and()
                 .formLogin();
     }
